@@ -1,9 +1,13 @@
 mod utils;
 mod graphics;
+mod macros;
+mod game;
 
 pub use graphics::{draw_matrix_on_canvas, DisplayElement};
 use wasm_bindgen::prelude::*;
 use web_sys::*;
+use game::{maps, entities::*, tiles::*, logic::Game};
+use rgb::RGB8;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -20,22 +24,33 @@ fn main() -> Result<(), JsValue> {
     let canvas = document.create_element("canvas")?.dyn_into::<web_sys::HtmlCanvasElement>()?;
     canvas.set_attribute("style", "background-color: black;")?;
     canvas.set_width(800);
-    canvas.set_height(600);
-    let letters = [
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new('@', String::from("blue")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-        [DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white")), DisplayElement::new(' ', String::from("white"))],
-    ];
+    canvas.set_height(800);
 
-    // Draw the matrix on the canvas in white text
-    draw_matrix_on_canvas(letters, &canvas)?;
+    let player = Entity::Player(EntityType{
+        display_values: DisplayValues::new(Some('@'), RGB8::new(255, 255, 255)),
+        x: None,
+        y: None,
+        health: 100,
+        speed: 1,
+    });
+
+
+    let game = Game::new(maps::map1::MAP1, player );
+
+    
+    // let letters = [
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(None, String::from("white")), DisplayElement::new(None, String::from("white")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")),
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(None, String::from("white")), DisplayElement::new(None, String::from("white")), DisplayElement::new(Some(' '), String::from("black")),
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")),
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")),
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")),
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some('@'), String::from("yellow")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")),
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")),
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")),
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(None, String::from("white")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")),
+    //     DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")), DisplayElement::new(Some(' '), String::from("black")),
+    // ];
+    // draw_matrix_on_canvas(letters, &canvas)?;
     body.append_child(&canvas)?;
     Ok(())
 }
