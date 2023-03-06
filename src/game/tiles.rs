@@ -1,10 +1,21 @@
 
 use rgb::RGB8;
 
+#[derive(Debug)]
 pub enum Tile {
     Terrain(TerrainType),
 }
 
+impl Tile {
+    pub fn display_values(&self) -> &DisplayValues {
+        match self {
+            Tile::Terrain(terrain_type) => &terrain_type.display_values,
+            _ => unreachable!("Unsupported tile variant: {:?}", self),
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct DisplayValues {
     pub d: Option<char>,
     pub color: RGB8,
@@ -14,8 +25,12 @@ impl DisplayValues {
     pub fn new(d: Option<char>, color: RGB8) -> Self {
         Self { d, color }
     }
-}
 
+    pub fn get_js_color(&self) -> String {
+        format!("rgb({},{},{})", self.color.r, self.color.g, self.color.b)
+    }
+}
+#[derive(Debug)]
 pub struct TerrainType {
     pub display_values: DisplayValues,
     pub passable: bool,

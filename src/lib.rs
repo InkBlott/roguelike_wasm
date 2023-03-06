@@ -28,14 +28,14 @@ fn main() -> Result<(), JsValue> {
 
     let player = Entity::Player(EntityType{
         display_values: DisplayValues::new(Some('@'), RGB8::new(255, 255, 255)),
-        x: None,
-        y: None,
+        x: Some(5),
+        y: Some(5),
         health: 100,
         speed: 1,
     });
 
 
-    let game = Game::new(maps::map1::MAP1, player );
+    let game = Game::new(maps::map1::MAP1, player);
 
     
     // let letters = [

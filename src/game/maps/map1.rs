@@ -2,7 +2,7 @@ use super::Map;
 use crate::game::tiles;
 
 pub const MAP1: Map = Map {
-    map: &[
+    tiles: &[
         tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL,
         tiles::WALL, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::WALL,
         tiles::WALL, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::WALL,
@@ -14,6 +14,6 @@ pub const MAP1: Map = Map {
         tiles::WALL, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::GROUND, tiles::WALL,
         tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL, tiles::WALL,
     ],
-    width: 2,
-    player_spawns: &[(0, 0)],
+    width: 10,
+    player_spawns: &[(5, 5)],
 };
